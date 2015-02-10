@@ -1,0 +1,14 @@
+Total number of items sold: 7 
+Total number of items to reorder: 8 
+
+Sorted list of items to re-order:
+3 1 
+11 5 
+29 1 
+41 1 
+
+Sorted list of items sold:
+11 3 
+29 2 
+3 1 
+41 1 

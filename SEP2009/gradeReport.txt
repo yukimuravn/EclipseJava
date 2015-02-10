@@ -1,0 +1,8 @@
+8002 Nie 93.20 A 
+8006 Kim 91.00 A 
+8031 Beherns 90.80 A 
+8004 Smith 80.80 B 
+8001 Jones 77.60 C 
+8012 Watanabe 66.80 D 
+
+Class average = 83.37 

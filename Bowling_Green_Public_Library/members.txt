@@ -1,0 +1,8 @@
+AA11 Mustafa 15 5 4
+AB01 Uta 13 10 3
+CC20 Xing 10 9 5
+DA19 Xia 8 8 1
+GT88 Li 5 1 5
+HH76 Huang 14 8 0
+GG86 Gary 12 7 2
+JJ23 David 1 1 1

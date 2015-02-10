@@ -1,0 +1,7 @@
+8001	Jones	12	3.0
+8002	Nie	9	3.87
+8004	Smith	24	3.15
+8006	Kim	27	2.22
+8008	Kanabar	21	3.85
+8012	Watanabe	15	3.45
+8031	Beherns	30	4.0

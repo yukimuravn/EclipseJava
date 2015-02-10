@@ -1,0 +1,10 @@
+	Overall Student GPA Report 
+
+ID	 	 Name	Credit Hrs.	GPA
+8001     Jones      15		3.00
+8002     Nie        12		3.90
+8004     Smith      27		3.24
+8006     Kim        30		2.30
+8008     Kanabar    24		3.87
+8012     Watanabe   18		3.54
+8031     Beherns    33		4.00
