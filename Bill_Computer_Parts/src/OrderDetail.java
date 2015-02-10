@@ -80,7 +80,8 @@ public class OrderDetail {
 			printWriter.write(String.format("%40s \n \n", orderDetails));
 			System.out.printf("%s  %s  %s  %s  %s  %s \n",cName,pName,price,quantity,ordAmount,discount);
 			printWriter.write(String.format("%s  %s  %s  %s  %s  %s \n",cName,pName,price,quantity,ordAmount,discount));
-						
+			
+			/*
 			Iterator<Order> orderIterator = allOrders.iterator();
 			while (orderIterator.hasNext()) {
 				Order order = orderIterator.next();
@@ -89,15 +90,15 @@ public class OrderDetail {
 				printWriter.write(String.format("%-14s %-13s %-9.1f %-8d %-12.1f %.1f \n", order.getCustomerName(), order.getProductName(),
 						order.getProductPrice(), order.getQuantity(), order.getOrderAmount(), order.getDiscountAmount()));
 			}
+			*/
 			
-			/*
 			for (Order order : allOrders) {
 				System.out.printf("%-14s %-13s %-9.1f %-8d %-12.1f %.1f \n", order.getCustomerName(), order.getProductName(),
 						order.getProductPrice(), order.getQuantity(), order.getOrderAmount(), order.getDiscountAmount());
 				printWriter.write(String.format("%-14s %-13s %-9.1f %-8d %-12.1f %.1f \n", order.getCustomerName(), order.getProductName(),
 						order.getProductPrice(), order.getQuantity(), order.getOrderAmount(), order.getDiscountAmount()));
 			}
-			*/
+			
 			printWriter.close();
 		} catch (Exception e) {
 			// TODO: handle exception
