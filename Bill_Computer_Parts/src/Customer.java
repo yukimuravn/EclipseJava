@@ -60,14 +60,20 @@ public class Customer {
 		public int compare(Customer c1, Customer c2) 
 		{
 	
-		   int ttAmount1 = (int) c1.getTotalAmount();
-		   int ttAmount2 = (int) c2.getTotalAmount();
-	
-		   /*For ascending order*/
-		   //return ttAmount1 - ttAmount2;
-	
-		   /*For descending order*/
-		   return ttAmount2 - ttAmount1;
+		   double ttAmount1 = c1.getTotalAmount();
+		   double ttAmount2 = c2.getTotalAmount();
+		   /* For descending order */
+		   double res = ttAmount2 - ttAmount1;
+		   /* For ascending order */
+		   //double res = ttAmount1 - ttAmount2;
+		   if(res > 0)
+				return 1;
+			else if(res == 0)
+				return 0;
+			else 
+				return -1;
+		   
+
 		}
     };
     
