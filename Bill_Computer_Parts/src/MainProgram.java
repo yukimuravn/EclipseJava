@@ -44,7 +44,7 @@ public class MainProgram {
 			}
 		scnOrders.close();		
 		
-		//
+		//Order processing
 		orderDetail.addCustomerDetail();
 		orderDetail.addProductDetail();
 		orderDetail.calculateOrderAmount();
