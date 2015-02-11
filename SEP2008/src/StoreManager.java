@@ -32,8 +32,8 @@ public class StoreManager {
 		// process reorder and output
 		inv.processReorder();
 		
-		//System.out.printf("Total number of items sold: %d \n", inv.numOfSales);
-		//System.out.printf("Total number of items to reorder: %d \n",inv.totalReorder);
+		System.out.printf("Total number of items sold: %d \n", inv.numOfSales);
+		System.out.printf("Total number of items to reorder: %d \n",inv.totalReorder);
 		
 		PrintWriter printWriter = new PrintWriter(new File("output.txt"));
 		printWriter.printf("Total number of items sold: %d \n", inv.numOfSales);
