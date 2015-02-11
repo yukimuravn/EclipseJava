@@ -12,6 +12,7 @@ public class OrderDetail {
 	List<Customer> allCustomers;
 	List<Product> allProducts;
 
+	//Method for order processing
 	
 	public OrderDetail() {
 		allOrders = new ArrayList<Order>();
