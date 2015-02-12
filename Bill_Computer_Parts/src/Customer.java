@@ -85,7 +85,7 @@ public class Customer {
 	
 		   String cus1 = c1.getName();
 		   String cus2 = c2.getName();
-	
+		   
 		   /*For ascending order*/
 		   return cus1.compareTo(cus2);
 	
