@@ -21,7 +21,6 @@ public class MainProgram {
 			int test5 = scnCourse.nextInt();
 			Course course = new Course(id, test1, test2, test3, test4, test5);
 			course.calAvrScore();
-			course.calGrade();
 			report.addCourse(course);
 		}
 		scnCourse.close();

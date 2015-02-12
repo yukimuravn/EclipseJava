@@ -31,85 +31,33 @@ public class Course {
 	{
 		this.studentID = studentID;
 	}
-	
-	public int getScore_1()
-	{
-		return score_1;
-	}
-	
-	public void setScore_1(int score_1)
-	{
-		this.score_1 = score_1;
-	}
 
-	public int getScore_2()
-	{
-		return score_2;
-	}
-	
-	public void setScore_2(int score_2)
-	{
-		this.score_2= score_2;
-	}
-	
-	public int getScore_3()
-	{
-		return score_3;
-	}
-	
-	public void setScore_3(int score_3)
-	{
-		this.score_3= score_3;
-	}
-
-	public int getScore_4()
-	{
-		return score_4;
-	}
-	
-	public void setScore_4(int score_4)
-	{
-		this.score_4= score_4;
-	}
-
-	public int getScore_5()
-	{
-		return score_5;
-	}
-	
-	public void setScore_5(int score_5)
-	{
-		this.score_5 = score_5;
-	}
-	
 	public void calAvrScore()
 	{
 		double scr = (score_1 + score_2 + score_3 + score_4 + score_5)/5.0d;
+		
+		if (scr >= 90.0) {
+			this.gradeRslt = "A";
+		}
+		else if (scr < 90 && scr >= 80.0) {
+			this.gradeRslt = "B";
+		}
+		else if (scr < 80 && scr >= 70.0) {
+			this.gradeRslt = "C";
+		}
+		else if (scr < 70.0 && scr >= 60.0) {
+			this.gradeRslt = "D";
+		}
+		else {
+			this.gradeRslt = "F";
+		}
+		
 		this.avrScore = scr;
 	}
 	
 	public double getAvrScore() 
 	{
 		return avrScore;
-	}
-	
-	public void calGrade()
-	{
-		if (avrScore >= 90.0) {
-			this.gradeRslt = "A";
-		}
-		else if (avrScore < 90 && avrScore >= 80.0) {
-			this.gradeRslt = "B";
-		}
-		else if (avrScore < 80 && avrScore >= 70.0) {
-			this.gradeRslt = "C";
-		}
-		else if (avrScore < 70.0 && avrScore >= 60.0) {
-			this.gradeRslt = "D";
-		}
-		else {
-			this.gradeRslt = "F";
-		}
 	}
 	
 	public String getGrade()
@@ -123,8 +71,18 @@ public class Course {
 		{
 			double scr1 = item1.getAvrScore();
 			double scr2 = item2.getAvrScore();
-			int i = Double.compare(scr2, scr1);
-			return i;
+			//double res = scr1 - scr2; //Sort by ascending 
+			double res = scr2 - scr1; //Sort by descending
+			if(res > 0) {
+				return 1;
+			}
+			else if (res == 0) {
+				return 0;
+			}
+			else {
+				return -1;
+			}
 		}
+
 	}; 
 }
