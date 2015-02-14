@@ -124,26 +124,27 @@ public class SlipManager {
 	 */
 	public void displayResult() {
 		//Display "salespersonPerformance.txt" to screen
-		for (Performance performance : sortedPerformanceList) {
-			StringBuilder output = new StringBuilder();
+		StringBuilder output = new StringBuilder();
+		for (Performance performance : sortedPerformanceList) {			
 			output.append(performance.getPersonID()).append("\t");
 			for (Product product : performance.getProductList()) {
 				output.append(product.getNumOfsales()).append("\t");				
 			}
 			output.append(performance.getPerformance());
-			System.out.println(output.toString());
+			output.append("\n");			
 		}
-		
+		System.out.println(output.toString());
 		System.out.println();
 		
 		//Display "salability.txt" to screen
-		for (Salability salability : sortedSalesList) {
-			StringBuilder output = new StringBuilder();
-			output.append(salability.getID()).append("\t");
-			output.append(salability.getNum()).append("\t");
-			output.append(salability.getTotalValue()).append("\t");
-			System.out.println(output.toString());
+		StringBuilder output2 = new StringBuilder();
+		for (Salability salability : sortedSalesList) {			
+			output2.append(salability.getID()).append("\t");
+			output2.append(salability.getNum()).append("\t");
+			output2.append(salability.getTotalValue()).append("\t");
+			output2.append("\n");
 		}
+		System.out.println(output2.toString());
 	}
 	
 	/*
@@ -152,26 +153,28 @@ public class SlipManager {
 	public void writeToFile() throws FileNotFoundException {
 		//Write to file "salespersonPerformance.txt"
 		PrintWriter printWriter = new PrintWriter(new File("salespersonPerformance.txt"));
-		for (Performance performance : sortedPerformanceList) {
-			StringBuilder output = new StringBuilder();
+		StringBuilder output = new StringBuilder();
+		for (Performance performance : sortedPerformanceList) {			
 			output.append(performance.getPersonID()).append("\t");
 			for (Product product : performance.getProductList()) {
 				output.append(product.getNumOfsales()).append("\t");				
 			}
 			output.append(performance.getPerformance());
-			printWriter.println(output);
+			output.append("\n");
 		}
+		printWriter.println(output.toString());
 		printWriter.close();
 		
 		//Write to file "salability.txt"
 		PrintWriter printWriter2 = new PrintWriter(new File("salability.txt"));
-		for (Salability salability : sortedSalesList) {
-			StringBuilder output = new StringBuilder();
-			output.append(salability.getID()).append("\t");
-			output.append(salability.getNum()).append("\t");
-			output.append(salability.getTotalValue()).append("\t");
-			printWriter2.println(output.toString());
+		StringBuilder output2 = new StringBuilder();
+		for (Salability salability : sortedSalesList) {	
+			output2.append(salability.getID()).append("\t");
+			output2.append(salability.getNum()).append("\t");
+			output2.append(salability.getTotalValue()).append("\t");
+			output2.append("\n");
 		}
+		printWriter2.println(output2.toString());
 		printWriter2.close();
 	}
 }
