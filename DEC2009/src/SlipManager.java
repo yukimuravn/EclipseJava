@@ -1,3 +1,6 @@
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashSet;
@@ -10,12 +13,14 @@ public class SlipManager {
 	List<Price> priceList;
 	List<Performance> performanceList;
 	List<Performance> sortedPerformanceList;
+	List<Salability> salesList;
+	List<Salability> sortedSalesList;
 	
 	public SlipManager() {
 		slipList = new ArrayList<Slip>();
 		priceList = new ArrayList<Price>();
 		performanceList = new ArrayList<Performance>();
-		sortedPerformanceList = new ArrayList<Performance>();
+		salesList = new ArrayList<Salability>();
 	}
 	
 	public void addSlip(Slip p) {
@@ -55,8 +60,7 @@ public class SlipManager {
 	
 	/*
 	 * Process each product in productList of each person in performanceList
-	 */
-	
+	 */	
 	public void processProductList() {
 		for (Performance performance : performanceList) {
 			for (Slip slip : slipList) {
@@ -69,8 +73,7 @@ public class SlipManager {
 	
 	/*
 	 * Process performance of each person in performanceList
-	 */
-	
+	 */	
 	public void processTotalPerfList() {
 		for (Performance performance : performanceList) {
 			performance.calculatePerformance();
@@ -79,18 +82,48 @@ public class SlipManager {
 	
 	/*
 	 * Copy performanceList to sortedPerformanceList and sort descending by performance
-	 */
-	
+	 */	
 	public void sortPerfList() {
 		sortedPerformanceList = new ArrayList<>(performanceList);
 		Collections.sort(sortedPerformanceList, Performance.sortDescPerf);
 	}
 	
 	/*
+	 * Copy salesList to sortedSalesList and sort descending by totalValue
+	 */
+	public void sortSalesList() {
+		sortedSalesList = new ArrayList<>(salesList);
+		Collections.sort(sortedSalesList, Salability.sortDescTotal);
+	}
+	/*
+	 * add Salary to SalabilityList
+	 */
+	public void addSalability() {
+		for (Price price : priceList) {
+			Salability s = new Salability(price);
+			salesList.add(s);
+		}		
+	}
+	
+	/*
+	 * process SalabilityList
+	 */
+	public void processSalability() {
+		for (Salability salability : salesList) {
+			for (Slip slip : slipList) {
+				if (salability.getID() == slip.getProductID()) {
+					salability.increaseNum(slip.getNumOfsales());
+				}
+			}
+			salability.calTotalValue();
+		}
+	}
+	
+	/*
 	 * Display result to screen
 	 */
 	public void displayResult() {
-		this.sortPerfList();
+		//Display "salespersonPerformance.txt" to screen
 		for (Performance performance : sortedPerformanceList) {
 			StringBuilder output = new StringBuilder();
 			output.append(performance.getPersonID()).append("\t");
@@ -100,8 +133,46 @@ public class SlipManager {
 			output.append(performance.getPerformance());
 			System.out.println(output.toString());
 		}
+		
+		System.out.println();
+		
+		//Display "salability.txt" to screen
+		for (Salability salability : sortedSalesList) {
+			StringBuilder output = new StringBuilder();
+			output.append(salability.getID()).append("\t");
+			output.append(salability.getNum()).append("\t");
+			output.append(salability.getTotalValue()).append("\t");
+			System.out.println(output.toString());
+		}
 	}
 	
-	
+	/*
+	 * write the result to file
+	 */
+	public void writeToFile() throws FileNotFoundException {
+		//Write to file "salespersonPerformance.txt"
+		PrintWriter printWriter = new PrintWriter(new File("salespersonPerformance.txt"));
+		for (Performance performance : sortedPerformanceList) {
+			StringBuilder output = new StringBuilder();
+			output.append(performance.getPersonID()).append("\t");
+			for (Product product : performance.getProductList()) {
+				output.append(product.getNumOfsales()).append("\t");				
+			}
+			output.append(performance.getPerformance());
+			printWriter.println(output);
+		}
+		printWriter.close();
+		
+		//Write to file "salability.txt"
+		PrintWriter printWriter2 = new PrintWriter(new File("salability.txt"));
+		for (Salability salability : sortedSalesList) {
+			StringBuilder output = new StringBuilder();
+			output.append(salability.getID()).append("\t");
+			output.append(salability.getNum()).append("\t");
+			output.append(salability.getTotalValue()).append("\t");
+			printWriter2.println(output.toString());
+		}
+		printWriter2.close();
+	}
 }
 

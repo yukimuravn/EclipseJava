@@ -2,6 +2,7 @@
 public class Price {
 	int id;
 	double price;
+	
 	public Price(int id, double price)
 	{
 		super();

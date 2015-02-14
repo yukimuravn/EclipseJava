@@ -33,7 +33,12 @@ public class MainProgram {
 		slipManager.addIDPerformance();
 		slipManager.processProductList();
 		slipManager.processTotalPerfList();
+		slipManager.sortPerfList();
+		slipManager.addSalability();
+		slipManager.processSalability();
+		slipManager.sortSalesList();
 		slipManager.displayResult();
+		slipManager.writeToFile();
 	}
 
 }
