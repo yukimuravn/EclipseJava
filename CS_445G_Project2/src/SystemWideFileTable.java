@@ -14,7 +14,6 @@ public class SystemWideFileTable {
 	/*
 	 * add file that opened to the System-Wide Open File Table
 	 */
-	
 	public void addOpenedFile(SimulatedFile newfile)
 	{
 		openedFileList.add(newfile);
