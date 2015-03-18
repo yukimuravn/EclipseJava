@@ -12,13 +12,18 @@ public class SystemWideFileTable {
 	}
 	
 	/*
-	 * add file that opened to the System-Wide Open File Table
+	 * add file to the System-Wide Open File Table
+	 * used for open() function of disk
 	 */
 	public void addOpenedFile(SimulatedFile newfile)
 	{
 		openedFileList.add(newfile);
 	}
 	
+	/*
+	 * remove file from the System-Wide Open File Table
+	 * used for close() function of disk
+	 */
 	public void removeOpenedFile(SimulatedFile openedfile)
 	{
 		Iterator<SimulatedFile> iterator = openedFileList.iterator();
@@ -40,6 +45,17 @@ public class SystemWideFileTable {
 		}
 		return null;
 	} 
+	
+	public ThreadFile getThreadFile(String fName)
+	{
+		for (int i = 0; i < openedFileList.size(); i++) {
+			if (openedFileList.get(i).getFileName().equals(fName)) {
+				ThreadFile tFile = new ThreadFile(fName, i);
+				return tFile;
+			}
+		}
+		return null;
+	}
 	
 	public void displayToScreen()
 	{
