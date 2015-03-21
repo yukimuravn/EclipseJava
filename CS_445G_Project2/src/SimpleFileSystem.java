@@ -15,11 +15,9 @@ public class SimpleFileSystem {
 				// TODO Auto-generated method stub
 				disk.create("file1", 7);
 				disk.write("file1");
-				//System.out.println(disk.read("file1"));
 				disk.close("file1");
 				disk.create("file2", 3);
 				disk.write("file2");
-				//System.out.println(disk.read("file2"));
 				disk.close("file2");
 			}
 		});
@@ -81,7 +79,7 @@ public class SimpleFileSystem {
 		p2.start();
 		p3.start();
 		
-		
+		/*
 		try {
 			p2.join();
 			p3.join();
@@ -89,8 +87,8 @@ public class SimpleFileSystem {
 			// TODO: handle exception.
 			e.printStackTrace();
 		}
-
-		disk.displayToScreen();		
+		disk.displayToScreen();	
+		*/	
 	}
 
 }
