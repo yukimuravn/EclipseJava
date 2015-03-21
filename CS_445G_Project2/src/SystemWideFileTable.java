@@ -1,14 +1,14 @@
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 
-
 public class SystemWideFileTable {
 	List<SimulatedFile> openedFileList;
-	
+
 	public SystemWideFileTable()
 	{
-		openedFileList = new ArrayList<SimulatedFile>();
+		openedFileList = Collections.synchronizedList(new ArrayList<SimulatedFile>());
 	}
 	
 	/*
@@ -17,44 +17,50 @@ public class SystemWideFileTable {
 	 */
 	public void addOpenedFile(SimulatedFile newfile)
 	{
-		openedFileList.add(newfile);
+		synchronized (newfile) {
+			openedFileList.add(newfile);
+		}		
 	}
 	
 	/*
 	 * remove file from the System-Wide Open File Table
 	 * used for close() function of disk
 	 */
-	public void removeOpenedFile(SimulatedFile openedfile)
+	public void removeOpenedFile(String file_name)
 	{
 		Iterator<SimulatedFile> iterator = openedFileList.iterator();
 		while (iterator.hasNext()) {
 			SimulatedFile file = iterator.next();
-			if (file.file_name.equals(openedfile.file_name)) {
+			if (file.file_name.equals(file_name)) {
 				iterator.remove();
 				break;
 			}	
-		}
+		}	
 	}
 	
 	public SimulatedFile getOpenedFile(String fName)
 	{
-		for (SimulatedFile file : openedFileList) {
-			if (file.getFileName().equals(fName)) {
-				return file;
+		synchronized (fName) {
+			for (SimulatedFile file : openedFileList) {
+				if (file.getFileName().equals(fName)) {
+					return file;
+				}
 			}
-		}
-		return null;
+			return null;
+		}		
 	} 
 	
 	public ThreadFile getThreadFile(String fName)
 	{
-		for (int i = 0; i < openedFileList.size(); i++) {
-			if (openedFileList.get(i).getFileName().equals(fName)) {
-				ThreadFile tFile = new ThreadFile(fName, i);
-				return tFile;
+		synchronized (fName) {
+			for (int i = 0; i < openedFileList.size(); i++) {
+				if (openedFileList.get(i).getFileName().equals(fName)) {
+					ThreadFile tFile = new ThreadFile(fName, i);
+					return tFile;
+				}
 			}
-		}
-		return null;
+			return null;
+		}		
 	}
 	
 	public void displayToScreen()

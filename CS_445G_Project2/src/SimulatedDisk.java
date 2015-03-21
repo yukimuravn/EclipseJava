@@ -1,13 +1,12 @@
-import java.util.ArrayList;
-import java.util.List;
-
 
 public class SimulatedDisk {
+	public static final int DATA_BLOCK_SIZE = 2048;
+	public static final int BLOCK_NUMBERS = 512; // Total is 512 blocks, 1 is for VolumeControlBlock, 1 is for FlatDirectory
 	SystemWideFileTable systemWideFileTable;
 	VolumeControlBlock volumeControlBlock;
 	FlatDirectory flatDirectory;	
-	List<Object> array_blocks;
-	List<ProcessFileTable> processFileTableList;
+	Object[] array_blocks;
+	ProcessFileTable[] array_processfiletable;
 	
 	/*
 	 * initialize SimulatedDisk()
@@ -16,20 +15,67 @@ public class SimulatedDisk {
 	{
 		super();
 		systemWideFileTable = new SystemWideFileTable();
-		volumeControlBlock = new VolumeControlBlock();
+		volumeControlBlock = new VolumeControlBlock(BLOCK_NUMBERS, DATA_BLOCK_SIZE);
 		flatDirectory = new FlatDirectory();
-		array_blocks = new ArrayList<Object>();
-		processFileTableList = new ArrayList<>();
+		array_processfiletable = new ProcessFileTable[3]; // 3 ProcessFileTable for 3 threads
+		
+		/*
+		 *  initialize the array_blocks of disk
+		 *  with the index 0 is VolumeControlBlock
+		 *  and index 1 is FlatDirectory
+		 *  the rest of the array is allocated by the file1, file2... (total 510 blocks)
+		 */
+		array_blocks = new Object[BLOCK_NUMBERS];
+		array_blocks[0] = volumeControlBlock;
+		array_blocks[1] = flatDirectory;				
 	}
 	
-	public void createProcessFileTable(long processID)
+	public void createProcessFileTable(long processID, int index)
 	{
 		ProcessFileTable pft = new ProcessFileTable(processID);
-		processFileTableList.add(pft);
+		array_processfiletable[index] = pft;
 	}
-
+	
 	/*
-	 * create a file with a specified size. The size is in terms of the number of blocks
+	 * allocate a file to array_blocks
+	 * start from the index = 2
+	 */
+	public SimulatedFile allocateFile(SimulatedFile file)
+	{
+		
+		int size = file.getFileSize();
+		int flag = 2;
+		int index_flag = 2;
+		
+		for (int i = 2; i < BLOCK_NUMBERS; i++) {			
+			if (array_blocks[i] == null) {
+				flag++;
+				if (flag == 3) {
+					index_flag = i;
+				}	
+				if (flag == size) {
+					// allocate file from index_flag
+					for (int j = index_flag; j < (index_flag+size); j++) {
+						this.array_blocks[j] = file;
+					}
+					file.setStartBlockNumber(index_flag);
+					return file;
+				}
+			}
+			else {
+				flag = 2;
+				index_flag = 2;
+			}
+		} 
+		
+		return file;
+	}
+	
+	/*
+	 * Create a file with a specified size. 
+	 * The size is in terms of the number of blocks
+	 * When create a file, automatically open that file
+	 * and add it to the FlatDirectory and SystemWideOpenFileTable
 	 */
 	public void create(String fName, int size)
 	{	
@@ -43,8 +89,10 @@ public class SimulatedDisk {
 			 * and then add to FlatDirectory
 			 */
 			SimulatedFile new_file = new SimulatedFile(fName, size);
-			flatDirectory.addFile(volumeControlBlock.allocateFile(new_file));
+			flatDirectory.addFile(this.allocateFile(new_file));
+			volumeControlBlock.updateFreeBlockArray(array_blocks);
 			System.out.println("creating " + fName);
+			this.open(fName);
 		}
 		else {
 			System.out.println("can not create(): " + fName + " is existed");
@@ -57,13 +105,15 @@ public class SimulatedDisk {
 	public void open(String fName)
 	{
 		/*
-		 * check if file_name is already opened or exist in the SystemWideFileTable
+		 * check if file_name is already opened/exist 
+		 * in the SystemWideFileTable
 		 */
 		if (systemWideFileTable.getOpenedFile(fName) == null) {
 			/*
 			 * if file_name is not opened or exist then
 			 * get file from FlatDirectory
 			 * and add to SystemWideFileTable
+			 * in this project we assume that no file was opened twice
 			 */
 			SimulatedFile file = flatDirectory.getFile(fName);
 			systemWideFileTable.addOpenedFile(file);
@@ -74,9 +124,9 @@ public class SimulatedDisk {
 			 * and add to ProcessFileTable
 			 */
 			ThreadFile tFile = systemWideFileTable.getThreadFile(fName);
-			for (int i = 0; i < processFileTableList.size(); i++) {
-				if (processFileTableList.get(i).getID() == Thread.currentThread().getId()) {
-					processFileTableList.get(i).addThreadFile(tFile);
+			for (int i = 0; i < array_processfiletable.length; i++) {
+				if (array_processfiletable[i].getID() == Thread.currentThread().getId()) {
+					array_processfiletable[i].addThreadFile(tFile);
 					break;
 				}
 			}
@@ -90,6 +140,7 @@ public class SimulatedDisk {
 	
 	/*
 	 * close a file, and update system-wide and per-process open file tables
+	 * (remove that file in the SystemWideFileTable and ProcessFileTable)
 	 */
 	public void close(String fName)
 	{	
@@ -99,11 +150,21 @@ public class SimulatedDisk {
 		if (systemWideFileTable.getOpenedFile(fName) != null) {
 			/*
 			 * if file_name is opened or exist then
-			 * get file from FlatDirectory
-			 * and remove that file from SystemWideFileTable
+			 * remove that file from ProcessFileTable
 			 */
-			SimulatedFile file = flatDirectory.getFile(fName);
-			systemWideFileTable.removeOpenedFile(file);
+			for (int i = 0; i < array_processfiletable.length; i++) {
+				if (array_processfiletable[i].getID() == Thread.currentThread().getId()) {
+					ProcessFileTable pft = array_processfiletable[i];
+					pft.removeThreadFile(fName);
+					break;
+				}
+			}
+			
+			/*
+			 * remove that file from SystemWideFileTable
+			 */
+			systemWideFileTable.removeOpenedFile(fName);
+			
 			System.out.println("closing " + fName);
 		}
 		else {
@@ -113,6 +174,7 @@ public class SimulatedDisk {
 	
 	/*
 	 * read a file to a local variable
+	 * return a String content of the file
 	 */
 	public String read(String fName)
 	{
@@ -153,13 +215,31 @@ public class SimulatedDisk {
 	/*
 	 * not for the project
 	 * personal use
-	 * see the output
+	 * display the output
 	 */
 	public void displayToScreen()
 	{
-		for (ProcessFileTable pft : processFileTableList) {
+		/*
+		for (int i = 0; i < array_processfiletable.length; i++) {
+			ProcessFileTable pft = array_processfiletable[i];
 			pft.displayToScreen();
 		}
+		*/
+		/*
+		for (int i = 0; i < array_blocks.length; i++) {
+			if (array_blocks[i] == null) {
+				System.out.println("null");
+			}
+			else {
+				System.out.println("Allocated");
+			}
+		}
+		*/
+		/*
+		VolumeControlBlock vcb = (VolumeControlBlock) array_blocks[0];
+		vcb.displayToScreen();
+		*/
+		
 		//systemWideFileTable.displayToScreen();
 		//flatDirectory.displayToScreen();
 		//System.out.println("free_block_count = " + volumeControlBlock.getFreeBlockCount());

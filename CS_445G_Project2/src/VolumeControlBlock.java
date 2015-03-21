@@ -1,18 +1,24 @@
 
-public class VolumeControlBlock {	
-	public static final int DATA_BLOCK_SIZE = 2048;
-	public static final int BLOCK_NUMBERS = 510; // Total is 512 blocks, 1 is for VolumeControlBlock, 1 is for FlatDirectory
+public class VolumeControlBlock {
+	/*
+	 * this is 4 variables of VolumeControlBlock
+	 */
 	int number_of_blocks;
 	int size_of_block;
 	int free_block_count;
 	boolean[] free_block_array;
 	
-	public VolumeControlBlock()
+	/*
+	 * create VolumeControlBlock with 
+	 * the default number_of_blocks = 512 
+	 * and size_of_block = 2048
+	 */
+	public VolumeControlBlock(int numofblock, int sizeofblock)
 	{
 		super();
-		this.number_of_blocks = BLOCK_NUMBERS;
-		this.size_of_block = DATA_BLOCK_SIZE;
-		this.free_block_array = new boolean[number_of_blocks];
+		this.number_of_blocks = numofblock;
+		this.size_of_block = sizeofblock;
+		this.free_block_array = new boolean[number_of_blocks]; //510
 	}
 
 	public int getNumberOfBlocks()
@@ -42,36 +48,31 @@ public class VolumeControlBlock {
 	}
 	
 	/*
-	 * check the free_block_array to allocate the file, and then update the free_block_array
+	 * update free_block_array based on the array_blocks of disk
 	 */	
-	public SimulatedFile allocateFile(SimulatedFile file)
-	{
-		int size = file.getFileSize();
-		int flag = 0;
-		int index_flag = 0;
-		
-		for (int i = 0; i < free_block_array.length; i++) {			
-			if (free_block_array[i] == false) {
-				flag++;
-				if (flag == 1) {
-					index_flag = i;
-				}	
-				if (flag == size) {
-					// allocate file from index_flag
-					for (int j = index_flag; j < (index_flag+size); j++) {
-						this.free_block_array[j] = true;
-					}
-					file.setStartBlockNumber(index_flag);
-					return file;
-				}
+	public void updateFreeBlockArray(Object[] array_blocks)
+	{		
+		free_block_array[0] = true; // this is for VolumeControlBlock
+		free_block_array[1] = true; // this is for FlatDirectory
+		for (int i = 2; i < array_blocks.length-2; i++) {
+			if (array_blocks[i] == null) {
+				free_block_array[i] = false;
 			}
 			else {
-				flag = 0;
-				index_flag = 0;
+				free_block_array[i] = true;
 			}
-		} 
-		
-		return file;
+		}
 	}
 	
+	public void displayToScreen()
+	{
+		for (int i = 0; i < free_block_array.length; i++) {
+			if (free_block_array[i] == true) {
+				System.out.println("true");
+			}
+			else {
+				System.out.println("false");
+			}
+		}
+	}
 }

@@ -1,13 +1,13 @@
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
-
 
 public class FlatDirectory {
 	List<SimulatedFile> file_list;
 	
 	public FlatDirectory()
 	{
-		file_list = new ArrayList<SimulatedFile>();
+		file_list = Collections.synchronizedList(new ArrayList<SimulatedFile>());
 	}
 	
 	public void addFile(SimulatedFile file)
